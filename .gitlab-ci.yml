@@ -1,0 +1,25 @@
+.build_image:
+  stage: build
+  tags:
+    - dind
+  script:
+    - build-image -- --pull ${BUILD_ARGS}
+
+stages:
+  - build
+  - release
+
+build:
+  variables:
+    BUILD_ARGS: ""
+  extends: .build_image
+
+# push new image to private registry
+push:
+  stage: release
+  variables:
+    GIT_STRATEGY: none
+  tags:
+    - dind
+  script:
+    - release-image
